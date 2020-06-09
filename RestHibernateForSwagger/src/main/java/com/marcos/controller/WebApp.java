@@ -24,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marcos.VOTO.BridgeVOTO;
 import com.marcos.hiber.Country;
 import com.marcos.hiber.Employee;
+import com.marcos.pojo.CountryVo;
+import com.marcos.pojo.EmployeeVo;
 
 @RequestMapping("/api")
 @CrossOrigin
@@ -34,6 +37,7 @@ public class WebApp {
 
 	@Autowired
 	SessionFactory sessionFactory;
+	BridgeVOTO voto =  new BridgeVOTO();
 
 	@GetMapping("/test")
 	public ArrayList<A> test() {
@@ -114,16 +118,20 @@ public class WebApp {
 	}
 
 	@PostMapping("/addemployee")
-	public ResponseEntity<String> addEmployee(@RequestBody Employee employee) {
+	public ResponseEntity<String> addEmployee(@RequestBody EmployeeVo employeeVo) {
 		System.out.println("AddEmployee called.....");
-		System.out.println(employee.getName());
+		System.out.println(employeeVo);
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
-		System.out.println(employee.getCountry());
+		Employee employee= new Employee();
 		Country country = new Country();
-		country.setCid(employee.getCountry().getCid());
-		country.setCname(getStateName(employee.getCountry().getCid()));
+		employee=voto.saveEmployee(employeeVo);
+		System.out.println(employee);
+		country.setCid(employeeVo.getCid());
+		country.setCname(getCountryName(employeeVo.getCid()));
+		System.out.println(country);
 		employee.setCountry(country);
+		System.out.println(employee);
 		session.save(employee);
 		transaction.commit();
 		return new ResponseEntity<String>("Employee added in db successfully", HttpStatus.OK);
@@ -131,7 +139,7 @@ public class WebApp {
 	// ---------------------Extra Code suportive-------------------
 
 	@SuppressWarnings("unchecked")
-	private String getStateName(int cid) {
+	private String getCountryName(int cid) {
 		Session session = sessionFactory.openSession();
 		Criteria criteria = session.createCriteria(Country.class);
 		criteria.add(Restrictions.eq("cid", cid));
@@ -145,10 +153,12 @@ public class WebApp {
 	// -------------------------------------------------------------
 
 	@PostMapping("/addcountry")
-	public ResponseEntity<String> addCountry(@RequestBody Country country) {
+	public ResponseEntity<String> addCountry(@RequestBody CountryVo countryVo) {
+		
+		System.out.println("addcountry  called..."+countryVo);
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
-		session.save(country);
+		session.save(voto.savecountry(countryVo));
 		transaction.commit();
 		return new ResponseEntity<String>("Country added in db successfully", HttpStatus.OK);
 	}
