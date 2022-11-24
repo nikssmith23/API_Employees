@@ -20,7 +20,7 @@
 		<start-class>com.marcos.RestHibernateApplication</start-class>
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<spring-framework.version>5.0.0.RELEASE</spring-framework.version>
-		<hibernate.version>5.0.1.Final</hibernate.version>
+		<hibernate.version>5.3.20.Final</hibernate.version>
 		<mysql.connector.version>5.1.48</mysql.connector.version>
 	</properties>
 	<dependencies>
